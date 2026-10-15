@@ -1,6 +1,6 @@
 """Local gateway core. A future trusted transport adapter supplies caller identity.
 
-Only explicitly configured GET routes are executable. This module does not expose
+Only explicitly configured GET and JSON POST routes are executable. This module does not expose
 an HTTP/MCP listener or establish company authentication.
 """
 from __future__ import annotations
@@ -40,17 +40,25 @@ class UpstreamResponse:
 class HTTPSGetTransport:
     """One HTTPS GET, system certificate verification, no redirects or proxies."""
 
+    def __init__(self, *, cafile=None):
+        self.cafile = cafile
+
     def get(self, url: str, headers: dict[str, str], timeout: float,
             max_bytes: int) -> UpstreamResponse:
+        return self.request("GET", url, headers, None, timeout, max_bytes)
+
+    def request(self, method, url, headers, body, timeout, max_bytes):
         target = urlsplit(url)
         connection = http.client.HTTPSConnection(
             target.hostname, target.port or 443, timeout=timeout,
-            context=ssl.create_default_context(),
+            context=ssl.create_default_context(cafile=self.cafile),
         )
         deadline = time.monotonic() + timeout
         try:
-            connection.request("GET", target.path + ("?" + target.query if target.query else ""),
-                               headers=headers)
+            kwargs = {"headers": headers}
+            if body is not None:
+                kwargs["body"] = body
+            connection.request(method, target.path + ("?" + target.query if target.query else ""), **kwargs)
             response = connection.getresponse()
             # Redirects and upstream errors are returned as safe metadata only.
             if not 200 <= response.status < 300:
@@ -151,9 +159,19 @@ class Gateway:
             for route, settings in routes.items():
                 if not _path(route):
                     raise ConfigurationError("Use canonical absolute route paths")
-                _object(settings, ("response", "query"), ("response", "query"))
+                _object(settings, ("response", "query", "method", "body_fields", "max_body_bytes"), ("response", "query"))
                 if settings["response"] not in ("json", "file"):
                     raise ConfigurationError("Select json or file response")
+                method = settings.get("method", "GET")
+                if method not in ("GET", "POST"):
+                    raise ConfigurationError("Select GET or JSON POST")
+                if method == "POST":
+                    fields = settings.get("body_fields")
+                    limit = settings.get("max_body_bytes", 16384)
+                    if (settings["response"] != "json" or not isinstance(fields, list) or not fields
+                            or any(not isinstance(k, str) for k in fields)
+                            or type(limit) is not int or not 1 <= limit <= 65536):
+                        raise ConfigurationError("Configure bounded JSON POST fields")
                 query = settings["query"]
                 if (not isinstance(query, list)
                         or any(not isinstance(k, str) or not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,63}", k) for k in query)
@@ -220,11 +238,11 @@ class Gateway:
             if (not isinstance(request, dict)
                     or set(request) - {"service", "account", "method", "path", "query", "body"}
                     or not {"service", "account", "method", "path"} <= set(request)
-                    or request["method"] != "GET" or request.get("body") is not None
+                    or request["method"] not in ("GET", "POST")
                     or not _path(request["path"])
                     or not isinstance(request["service"], str)
                     or not isinstance(request["account"], str)):
-                result = fail("INVALID_REQUEST", "Use a configured GET business route")
+                result = fail("INVALID_REQUEST", "Use a configured business route")
                 return result
             service = self._services.get(request["service"])
             if service is None or request["account"] not in service[2]:
@@ -237,11 +255,31 @@ class Gateway:
                     or len(query) > 32 or any(not isinstance(v, str) or len(v) > 2048 for v in query.values())):
                 result = fail("INVALID_REQUEST", "Use configured query parameters and route")
                 return result
+            method = request["method"]
+            body = request.get("body")
+            if method != route.get("method", "GET") or (method == "GET" and body is not None):
+                result = fail("INVALID_REQUEST", "Use the configured method and body")
+                return result
+            encoded = None
+            if method == "POST":
+                try:
+                    if not isinstance(body, dict) or set(body) - set(route["body_fields"]):
+                        raise ValueError
+                    encoded = json.dumps(body, allow_nan=False).encode()
+                    if len(encoded) > route.get("max_body_bytes", 16384) or (body.get("stream") is not None and body.get("stream") is not False):
+                        raise ValueError
+                except (ValueError, TypeError, RecursionError):
+                    result = fail("INVALID_REQUEST", "Use a bounded non-streaming JSON body")
+                    return result
             suffix = urlencode(query)
             url = origin + request["path"] + ("?" + suffix if suffix else "")
             header, credential = accounts[request["account"]]
-            response = self.transport.get(url, {header: credential, "Accept-Encoding": "identity"},
-                                          self.timeout, self.max_bytes)
+            headers = {header: credential, "Accept-Encoding": "identity", "User-Agent": "macmini-gateway-e2e/1.0"}
+            if method == "GET":
+                response = self.transport.get(url, headers, self.timeout, self.max_bytes)
+            else:
+                headers["Content-Type"] = "application/json"
+                response = self.transport.request(method, url, headers, encoded, self.timeout, self.max_bytes)
             if not 200 <= response.status < 300:
                 result = fail("UPSTREAM_ERROR", "Check upstream status before another request")
                 result["status"] = response.status
@@ -262,6 +300,9 @@ class Gateway:
             return result
         except (TimeoutError, socket.timeout):
             result = fail("TIMEOUT", "Execution state requires verification before another request")
+            return result
+        except ssl.SSLCertVerificationError:
+            result = fail("UPSTREAM_ERROR", "Check the configured trusted CA bundle")
             return result
         except (OutputRejected, ValueError, UnicodeError, RecursionError):
             result = fail("INVALID_RESPONSE", "Upstream output did not pass validation")

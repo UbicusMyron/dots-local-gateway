@@ -33,7 +33,7 @@ class Transport(Protocol):
 
 
 _TOKEN = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}\Z")
-_CODES = {"UNAUTHENTICATED", "INVALID_REQUEST", "UNKNOWN_CONNECTION", "UPSTREAM_ERROR", "TIMEOUT"}
+_CODES = {"UNAUTHENTICATED", "INVALID_REQUEST", "UNKNOWN_CONNECTION", "UPSTREAM_ERROR", "TIMEOUT", "INVALID_RESPONSE"}
 
 
 def _token(value):
@@ -71,6 +71,20 @@ class Client:
         return cls(transport, **config)
 
     def get(self, service: str, account: str, path: str, *, query=None) -> dict[str, Any]:
+        return self.request(service, account, path, method="GET", query=query)
+
+    def post(self, service, account, path, *, body):
+        return self.request(service, account, path, method="POST", body=body)
+
+    def request(self, service, account, path, *, method="GET", query=None, body=None):
+        if method not in ("GET", "POST") or (method == "GET" and body is not None):
+            raise RequestError("INVALID_REQUEST")
+        if method == "POST":
+            try:
+                if not isinstance(body, dict) or len(json.dumps(body, allow_nan=False).encode()) > 65536:
+                    raise ValueError
+            except (ValueError, TypeError, RecursionError):
+                raise RequestError("INVALID_REQUEST") from None
         if not _token(service) or not _token(account) or account not in self._services.get(service, ()):
             raise RequestError("UNKNOWN_CONNECTION")
         if not isinstance(path, str) or not path.startswith("/"):
@@ -94,8 +108,8 @@ class Client:
         if not isinstance(query, dict) or any(not isinstance(k, str) or not isinstance(v, str)
                                               for k, v in query.items()):
             raise RequestError("INVALID_REQUEST")
-        payload = dict(service=service, account=account, method="GET", path=path,
-                       query=dict(query), body=None)
+        payload = dict(service=service, account=account, method=method, path=path,
+                       query=dict(query), body=body)
         failed = None
         try:
             response = self._transport.send(payload, timeout=self._timeout)

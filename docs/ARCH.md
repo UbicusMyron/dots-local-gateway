@@ -121,3 +121,7 @@ AI_Operations_Gateway/
 以下官方资料于 2026-10-15 的方案讨论中查阅，实施时重新核对实际账号与版本：
 - https://developers.openai.com/api/docs/guides/secure-mcp-tunnels
 - https://learn.chatgpt.com/docs/dots/computers-and-apps
+
+## 本机集成测试实现进展
+
+2026-10-15：任务 004 新增基于 MCP Python SDK 的回环 Streamable HTTP 服务、公司 Bearer 认证、stdio Tunnel 桥、脚本 MCPTransport、显式路由 JSON POST 与 launchd 生成材料。两端网络接口依照 docs/CONTRACTS/e2e-v1.md 做本机验证；生产接口冻结与真实 dots 脚本通道依实际 Tunnel 验收。

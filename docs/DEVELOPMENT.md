@@ -20,3 +20,7 @@ Last Reviewed: 2026-10-15
 治理检查沿用 constitution 工具。SPEC 的 Delivery Scope 记录交付范围，Non-Goals 记录已确认的非目标；后者适用治理写作豁免，检查结果按实际运行记录。
 
 2026-10-15 用户授权调用端实现：[002 dots_request 调用核心](TASKS/002-dots-request-core.md) 已完成本地模拟验收。当前 Python 注入边界用于适配器开发；正式通道、认证和文件线协议随阶段 1–2 定案。任务 001 保持待验证状态。
+
+## 当前执行入口
+
+2026-10-15：[004 本机端到端测试准备](TASKS/004-e2e-preparation.md) 接续两端核心实现；[运行手册](E2E-RUNBOOK.md) 提供安装和测试流程。任务 001 的真实 Tunnel 与 dots 验收条件保持待补齐；本地证据见 [E2E-QA](E2E-QA.md)。

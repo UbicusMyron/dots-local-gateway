@@ -3,6 +3,7 @@ import hashlib
 import io
 import json
 import logging
+import ssl
 from pathlib import Path
 import tempfile
 import unittest
@@ -149,6 +150,12 @@ class GatewayTests(unittest.TestCase):
             self.assertEqual(len(self.transport.calls), count + 1)
             self.assertNotIn(SECRET, json.dumps(result) + self.logs.getvalue())
 
+    def test_certificate_failure_is_safe_upstream_error(self):
+        self.transport.error = ssl.SSLCertVerificationError('MOCK_PRIVATE_TLS_DIAGNOSTIC')
+        result = self.execute()
+        self.assertEqual(result['error']['code'], 'UPSTREAM_ERROR')
+        self.assertNotIn('MOCK_PRIVATE_TLS_DIAGNOSTIC', json.dumps(result))
+
     def test_secret_permissions_and_symlink(self):
         path = self.root / "one"
         path.chmod(0o644)
@@ -156,6 +163,31 @@ class GatewayTests(unittest.TestCase):
             self.load()
         path.unlink()
         path.symlink_to(self.root / "two")
+        with self.assertRaises(ConfigurationError):
+            self.load()
+
+    def test_post_route_body_and_single_dispatch(self):
+        calls = []
+        def post(method, url, headers, body, timeout, max_bytes):
+            calls.append((method, url, headers, json.loads(body)))
+            return UpstreamResponse(200, b'{"ok":true}')
+        self.transport.request = post
+        self.config['services']['demo']['routes']['/chat'] = {
+            'method': 'POST', 'response': 'json', 'query': [],
+            'body_fields': ['messages', 'stream'], 'max_body_bytes': 100}
+        self.gateway = self.load()
+        result = self.execute(method='POST', path='/chat', body={'messages': ['hi'], 'stream': False})
+        self.assertTrue(result['ok'])
+        self.assertEqual(calls[0][0], 'POST')
+        self.assertEqual(calls[0][2]['Authorization'], 'Bearer ' + SECRET)
+        self.assertEqual(calls[0][2]['Content-Type'], 'application/json')
+        for body in (None, [], {'headers': {}}, {'stream': True}, {'messages': 'x'*101},
+                     {'messages': float('nan')}):
+            self.assertEqual(self.execute(method='POST', path='/chat', body=body)['error']['code'], 'INVALID_REQUEST')
+        self.assertEqual(len(calls), 1)
+
+    def test_post_config_requires_explicit_fields(self):
+        self.config['services']['demo']['routes']['/chat'] = {'method': 'POST', 'response': 'json', 'query': []}
         with self.assertRaises(ConfigurationError):
             self.load()
 
@@ -186,6 +218,17 @@ class TransportTests(unittest.TestCase):
         connection.request.assert_called_once_with("GET", "/items?page=1", headers={})
         response.read1.assert_not_called()
         connection.close.assert_called_once()
+
+    @patch("macmini_gateway.core.http.client.HTTPSConnection")
+    def test_post_bytes_are_sent_once(self, connection_class):
+        response = connection_class.return_value.getresponse.return_value
+        response.status = 200
+        response.read1.side_effect = [b'{}', b'']
+        result = HTTPSGetTransport().request('POST', 'https://api.example.invalid/chat',
+                                             {'Content-Type': 'application/json'}, b'{"x":1}', 5, 100)
+        self.assertEqual(result.body, b'{}')
+        connection_class.return_value.request.assert_called_once_with(
+            'POST', '/chat', headers={'Content-Type': 'application/json'}, body=b'{"x":1}')
 
     @patch("macmini_gateway.core.http.client.HTTPSConnection")
     def test_transport_bounds_actual_bytes(self, connection_class):

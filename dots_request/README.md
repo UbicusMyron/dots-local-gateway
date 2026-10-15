@@ -1,6 +1,8 @@
 # dots_request
 
-Python 3.10+ 标准库实现的 GET 调用核心。当前交付以本地模拟网关验证；真实 dots、MCP、公司认证和文件线协议待任务 001 验证后接入。Python 为本组件本地实现选择，线上适配依据通道证据确定。
+当前新增 `Client.post`、`MCPTransport` 和 `python -m dots_request.e2e` 测试入口，Python 3.11+ 安装 `requirements-e2e.txt` 后使用。适配器连接可达的 Streamable HTTP MCP 地址，使用独立公司调用凭证；真实 dots 的 Tunnel 脚本连接方式仍待账号实测。安装与命令见 [端到端运行手册](../docs/E2E-RUNBOOK.md)。下文原核心说明中的待接线状态以本段与任务 004 为准。
+
+Python 3.10+ 标准库实现的 GET 调用核心。本地模拟与 MCP 网络接线已验证；真实 dots 与 Tunnel 待任务 001 验证。Python 为本组件本地实现选择，线上适配依据通道证据确定。
 
 在仓库根目录执行：
 
@@ -21,7 +23,7 @@ items = result["data"]
 client.download("demo", "demo_account", "/report", "/absolute/path/report.csv")
 ```
 
-`config.example.json` 记录服务/账户别名、单次调用超时秒数和文件大小上限。配置路径由调用方显式提供。公司连接信息由未来通道适配器管理；第三方认证由堡垒机管理。示例只使用模拟内容。
+`config.example.json` 记录服务/账户别名、单次调用超时秒数和文件大小上限。配置路径由调用方显式提供。公司连接信息由 MCPTransport 的 URL 与 token 文件管理；第三方认证由堡垒机管理。示例只使用模拟内容。
 
 `get` 构造草案中的 GET 请求，query 的键和值均为字符串，body 为 null。返回经过结构检查的字典（request_id、ok、status、data 或 file）。业务数据的秘密隔离由网关负责；客户端过滤未知顶层字段，错误仅展示代码和请求编号，保留 retryable 元数据供业务决定。TIMEOUT 表示执行结果待核实。客户端每次调用提交一次，业务拥有循环、并发与重试。
 

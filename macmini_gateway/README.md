@@ -1,6 +1,8 @@
 # macmini_gateway
 
-当前交付为 Python 3.11+ 的只读网关核心，使用标准库，已通过模拟客户端和模拟第三方验证。公司连接认证、MCP/Tunnel 接线、常驻服务入口与 launchd 配置在通道验证和契约确认后交付。
+当前新增本机集成测试服务：`python -m macmini_gateway.server` 提供经公司 Bearer 认证的回环 MCP 入口；`tunnel_stdio` 提供 Tunnel 桥。GET 与显式配置的非流式 JSON POST、launchd 材料见 [端到端运行手册](../docs/E2E-RUNBOOK.md) 和 [测试契约](../docs/CONTRACTS/e2e-v1.md)。真实 Tunnel、dots 和常驻恢复待实测。下文原核心说明中的待交付状态以本段与任务 004 为准。
+
+核心使用 Python 3.11+ 标准库；MCP 接线使用 requirements-e2e.txt 中固定版本依赖。核心与本地 MCP 网络测试已通过，真实 Tunnel 与 dots 验收按运行手册执行。
 
 ## 本地运行
 
@@ -18,7 +20,7 @@ python3 -m unittest discover -s macmini_gateway/tests -v
 - 固定 HTTPS origin、精确业务路径、允许的查询字段和账户凭证路由。
 - 本地 Bearer 与 X- API key 适配；平台 token 刷新由后续平台适配任务补充。
 - GET JSON 请求与有大小上限的文件下载；业务循环和重试由调用端决定。
-- 系统 CA 验证、直接 HTTPS 连接、逐次请求；重定向作为上游错误返回。
+- 核心默认系统 CA；MCP 服务默认 certifi CA 并支持 --ca-file，保持证书与主机名验证。直接 HTTPS 连接、逐次请求；重定向作为上游错误返回。
 - 0600、当前服务用户所有的普通凭证文件；末级符号链接校验；加载时读取，重建实例后应用凭证轮换。
 - 输出长度检查、已加载凭证的原文及常见编码检查、JSON 解码后递归检查。
 - 固定错误消息、服务生成请求编号、状态与耗时日志。
@@ -37,7 +39,7 @@ result = gateway.execute(
 )
 ```
 
-`caller_verified` 是内部可信适配器传入的认证结论。当前只有模拟调用方；将来连接适配器必须自行验证公司身份，并用独立上下文提供此值。请求对象中的同名字段按未知字段拒绝。此 Python 方法属于待接线内部接口，正式网络入口依据共享契约确认。
+`caller_verified` 是内部可信适配器传入的认证结论。server.py 在校验 Bearer token 后提供此值；模拟测试直接注入该认证结论。请求对象中的同名字段按未知字段拒绝。此 Python 方法属于待接线内部接口，正式网络入口依据共享契约确认。
 
 JSON 返回 data；文件暂返回 file.content（base64）、size、sha256，默认上限 1 MiB，可配置至 16 MiB。成功结果完整交付；超限、输出检查失败和中断返回错误。文件形式、错误扩展 INVALID_RESPONSE 和这些限额是本地实现约定，正式双方契约依据通道实验确认。
 
@@ -45,4 +47,4 @@ JSON 返回 data；文件暂返回 file.content（base64）、size、sha256，�
 
 ## 部署接续条件
 
-任务 001 提供本地 MCP、桌面 Codex、真实 dots 工具与脚本的独立证据后，确定可信公司身份的接入位置、文件传输形式与常驻进程组合。随后增加服务入口及 launchd 配置，并验证启动、退出恢复、连接中断和休眠恢复。真实凭证由管理员在目标 Mac mini 本地录入。
+任务 001 提供本地 MCP、桌面 Codex、真实 dots 工具与脚本的独立证据后，确定可信公司身份的接入位置、文件传输形式与常驻进程组合。现有服务入口及 launchd 材料用于继续验证启动、退出恢复、连接中断和休眠恢复。真实凭证由管理员在目标 Mac mini 本地录入。
