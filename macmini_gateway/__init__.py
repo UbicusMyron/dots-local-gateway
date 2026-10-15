@@ -1,5 +1,4 @@
-"""Transport-independent, read-only gateway core (experimental internal API)."""
-
+"""Gateway core for configured API requests and downloads."""
 from .core import Gateway, ConfigurationError
 
 __all__ = ["Gateway", "ConfigurationError"]

@@ -1,13 +1,11 @@
 __pycache__/
 *.py[cod]
 .venv/
-# Administrator-managed local configuration and credentials
+# Administrator-managed configuration and credentials
 macmini_gateway/local/
-
-.env
-# Reproducible test delivery bundles
-dist/
-
-.DS_Store
-
 .dots-local/
+.env
+*.secret
+*.log
+dist/
+.DS_Store

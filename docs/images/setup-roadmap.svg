@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1080" viewBox="0 0 1600 1080"><rect width="1600" height="1080" fill="#F4F7FC"/>
+<text x="65" y="94" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="46" fill="#17263D">操作路线｜按编号完成，再进入下一步</text>
+<text x="65" y="137" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="25" fill="#53647B">蓝色：在 Mac 上操作　紫色：在网页操作　绿色：在 dots 上操作</text>
+<rect x="65" y="195" width="470" height="210" rx="18" fill="#FFFFFF" stroke="#D8E1EE" stroke-width="2"/>
+<text x="89" y="244" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="29" fill="#315CDC">01　准备资料</text>
+<text x="89" y="288" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">拿到源码、Python 3.11+</text>
+<text x="89" y="325" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">确认平台地址、接口和 key</text>
+<text x="89" y="362" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">确认目标工作区与 Tunnel 权限</text>
+<rect x="565" y="195" width="470" height="210" rx="18" fill="#FFFFFF" stroke="#D8E1EE" stroke-width="2"/>
+<text x="589" y="244" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="29" fill="#315CDC">02　安装 Mac 网关</text>
+<text x="589" y="288" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">创建项目专用 Python 环境</text>
+<text x="589" y="325" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">保存平台 key 和公司调用凭证</text>
+<text x="589" y="362" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">填写服务、账户和接口配置</text>
+<rect x="1065" y="195" width="470" height="210" rx="18" fill="#FFFFFF" stroke="#D8E1EE" stroke-width="2"/>
+<text x="1089" y="244" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="29" fill="#315CDC">03　启动 Mac 网关</text>
+<text x="1089" y="288" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">启动本地服务</text>
+<text x="1089" y="325" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">确认 8765 端口已有响应</text>
+<text x="1089" y="362" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">执行已授权的只读请求</text>
+<rect x="1065" y="470" width="470" height="210" rx="18" fill="#FFFFFF" stroke="#D8E1EE" stroke-width="2"/>
+<text x="1089" y="519" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="29" fill="#7354BA">04　连接 Tunnel</text>
+<text x="1089" y="563" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">网页创建或选择 Tunnel</text>
+<text x="1089" y="600" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">在 Mac 录入 runtime key</text>
+<text x="1089" y="637" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">初始化配置并保持运行</text>
+<rect x="565" y="470" width="470" height="210" rx="18" fill="#FFFFFF" stroke="#D8E1EE" stroke-width="2"/>
+<text x="589" y="519" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="29" fill="#7354BA">05　在工作区添加工具</text>
+<text x="589" y="563" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">选择对应工作区和 Tunnel</text>
+<text x="589" y="600" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">添加自定义 MCP 工具</text>
+<text x="589" y="637" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">确认 gateway_request 可调用</text>
+<rect x="65" y="470" width="470" height="210" rx="18" fill="#FFFFFF" stroke="#D8E1EE" stroke-width="2"/>
+<text x="89" y="519" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="29" fill="#16836B">06　开始使用</text>
+<text x="89" y="563" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">工具调用：直接发送业务任务</text>
+<text x="89" y="600" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">脚本调用：先取得可达入口</text>
+<text x="89" y="637" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">保存返回数据和 request_id</text>
+<path d="M535,300 L558,300" stroke="#315CDC" stroke-width="5"/><polygon points="558,300 542.6923992600045,307.3944140798909 542.6923992600045,292.6055859201091" fill="#315CDC"/>
+<path d="M1035,300 L1058,300" stroke="#315CDC" stroke-width="5"/><polygon points="1058,300 1042.6923992600045,307.3944140798909 1042.6923992600045,292.6055859201091" fill="#315CDC"/>
+<path d="M1300,405 L1300,463" stroke="#315CDC" stroke-width="5"/><polygon points="1300,463 1292.605585920109,447.6923992600045 1307.394414079891,447.6923992600045" fill="#315CDC"/>
+<path d="M1065,575 L1042,575" stroke="#315CDC" stroke-width="5"/><polygon points="1042,575 1057.3076007399955,567.6055859201091 1057.3076007399955,582.3944140798909" fill="#315CDC"/>
+<path d="M565,575 L542,575" stroke="#315CDC" stroke-width="5"/><polygon points="542,575 557.3076007399955,567.6055859201091 557.3076007399955,582.3944140798909" fill="#315CDC"/>
+<rect x="65" y="750" width="1470" height="230" rx="18" fill="#E7EDF9" stroke="#E7EDF9" stroke-width="2"/>
+<text x="95" y="807" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="32" fill="#315CDC">接着完成：常驻、日常维护和交接</text>
+<text x="95" y="858" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="27" fill="#17263D">常驻设置（第 8 节）  →  日常维护（第 9 节）  →  交接（第 11 节）</text>
+<text x="95" y="908" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="25" fill="#17263D">脚本入口尚未提供时，先使用已连通的工具入口；脚本部分按第 7 节的条件继续。</text>
+<text x="95" y="951" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="24" fill="#53647B">本文命令由读者在目标机器执行；源码文件夹保持可分发。</text>
+</svg>

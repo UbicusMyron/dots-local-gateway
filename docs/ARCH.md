@@ -12,20 +12,20 @@ Last Reviewed: 2026-10-15
 ## Architecture Summary
 
 业务 script / Codex → dots_request → 现成连接通道 → macmini_gateway → 第三方。
-Secure MCP Tunnel 为首选待验证通道；其客户端在堡垒机主动连接云端、转交请求和回传结果。
+Secure MCP Tunnel 承载工具通道；其客户端在堡垒机主动连接云端、转交请求和回传结果。
 代理服务确定性执行请求；Codex 用于主动配置、开发和排障。
 
 ## Repository And Deployment
 
-两个组件在同一仓库分别开发、分别部署，共享文档和接口契约。以下为组件目录规划；dots_request 已建立调用核心和本地模拟验证，macmini_gateway 随其实现任务建立。
+两个组件在同一仓库分别开发、分别部署，共享文档和接口契约。当前源码包含两端运行组件。
 
 ```text
 AI_Operations_Gateway/
-├── macmini_gateway/     # 堡垒机服务、认证适配、配置示例、测试及部署配置
-├── dots_request/        # 薄客户端、公共 skill、配置示例及测试
+├── macmini_gateway/     # 堡垒机服务、认证适配及配置示例
+├── dots_request/        # 薄客户端、公共 skill、配置示例
 ├── docs/
 │   ├── CONTRACTS/      # 两个组件共享的请求与响应约定
-│   └── TASKS/          # 当前可执行任务及阶段路线
+│   └── DEVELOPMENT.md # 交付状态
 └── AGENTS.md
 ```
 
@@ -34,7 +34,7 @@ AI_Operations_Gateway/
 - 交付常驻 MCP/API 服务，处理公司调用认证、参数与目标校验、凭证选择、第三方认证、API 请求和下载。
 - 维护服务/账户到本地凭证与目标地址的配置，以及按实际平台需要增加的认证适配器。
 - 返回业务数据、文件内容或可获取的结果，并提供请求编号与经过检查的错误信息。
-- 保存模拟调用测试、配置示例及 launchd 部署配置。真实凭证由管理员在目标 Mac mini 本地录入。
+- 提供配置示例和服务启动入口，部署时配置 launchd。真实凭证由管理员在目标 Mac mini 本地录入。
 - 现成 tunnel-client 作为部署依赖；其启动和运行说明随本组件维护，具体进程组合依据通道验证确定。
 
 ### dots_request
@@ -46,18 +46,12 @@ AI_Operations_Gateway/
 
 ### Shared Ownership
 
-`docs/CONTRACTS/` 是双方接口依据。网关校验和执行请求，客户端构造请求和消费结果；契约变更同步检查两端的模拟测试及真实链路验收。
+`docs/CONTRACTS/` 是双方接口依据。网关校验和执行请求，客户端构造请求和消费结果；契约变更同步检查两端实现及真实链路验收。
 两端发布物各自携带所需代码和配置示例。文件配置通过显式路径加载，真实凭证存储由堡垒机本地管理。
 
 ## Development Sequence
 
-1. 明确共享契约草案及模拟输入/输出，选择通道探针的运行时。
-2. 完成任务 001，用最小模拟服务和客户端探针验证真实 dots 的 AI 调用、脚本循环及文件传输。
-3. 依据证据确认传输、认证和文件形式，冻结最小接口；形成各组件的有界实现任务。
-4. macmini_gateway 使用模拟客户端和模拟第三方进行验证；dots_request 使用模拟网关进行验证。
-5. 两个组件在真实 dots 与 Mac mini 之间联合验收，再按确认范围接入首个真实平台。
-
-当前任务及后续阶段见 `docs/DEVELOPMENT.md`。
+当前交付运行源码、安装入口及接口说明。下一次接入按目标环境配置连接、凭证和常驻服务，任务状态见 `docs/DEVELOPMENT.md`。
 
 ## Technology Stack
 
@@ -101,7 +95,7 @@ AI_Operations_Gateway/
 
 ## Operational Concerns
 
-- Configuration: 配置引用本地秘密文件，仓库保存配置示例及模拟材料。
+- Configuration: 配置引用本地秘密文件，仓库保存配置示例。
 - Observability: 默认记录请求编号、服务别名、状态和耗时。
 - Failure handling: 结果待核实的写操作先核对状态，再决定重试；业务重试决策由 dots 负责。
 - Backups/migrations: 真实接入前确定凭证的本地备份及恢复方式。
@@ -114,14 +108,10 @@ AI_Operations_Gateway/
 
 ## Open Technical Questions
 
-对应 SPEC Q2/Q3：账号可用性、程序调用路径、文件传输、运行时和首个适配器。Tunnel 当前处于候选验证阶段。
+对应 SPEC Q2/Q3：账号可用性、程序调用路径、文件传输、运行时和首个适配器。目标环境按实际接入条件配置。
 
 ## Sources
 
 以下官方资料于 2026-10-15 的方案讨论中查阅，实施时重新核对实际账号与版本：
 - https://developers.openai.com/api/docs/guides/secure-mcp-tunnels
 - https://learn.chatgpt.com/docs/dots/computers-and-apps
-
-## 本机集成测试实现进展
-
-2026-10-15：任务 004 新增基于 MCP Python SDK 的回环 Streamable HTTP 服务、公司 Bearer 认证、stdio Tunnel 桥、脚本 MCPTransport、显式路由 JSON POST 与 launchd 生成材料。两端网络接口依照 docs/CONTRACTS/e2e-v1.md 做本机验证；生产接口冻结与真实 dots 脚本通道依实际 Tunnel 验收。

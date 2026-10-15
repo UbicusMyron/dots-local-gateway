@@ -25,7 +25,7 @@ Last Reviewed: 2026-10-15
 }
 ```
 
-service/account 为本地已配置别名；method 为方法字符串，开放集合待确认；path 为相对配置基址的接口路径；query 为参数对象；body 为可选 JSON 数据。模拟验证使用 GET。
+service/account 为本地已配置别名；method 为方法字符串，开放集合待确认；path 为相对配置基址的接口路径；query 为参数对象；body 为可选 JSON 数据。当前实现支持 GET 和显式配置的 JSON POST。
 调用方身份来自通道或外层连接认证。
 
 ## Response
@@ -56,8 +56,8 @@ service/account 为本地已配置别名；method 为方法字符串，开放集
 
 ## Compatibility
 
-当前处于首次接口设计阶段；正式冻结后的变更同步更新调用端与相关测试。
+当前处于首次接口设计阶段；正式冻结后的变更同步更新调用端与接口说明。
 
-## 本机测试实现
+## MCP 实现
 
-2026-10-15 本机服务与适配器依据 [e2e-v1.md](e2e-v1.md) 进行集成验证，包含明确的认证、POST、文件表示和限制。当前生产冻结状态以真实通道验收为依据。
+当前认证、POST、文件表示及限制见 [mcp-v1.md](mcp-v1.md)。

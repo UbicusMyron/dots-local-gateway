@@ -79,7 +79,6 @@ def main():
     parser.add_argument('--caller-secret', required=True)
     parser.add_argument('--ca-file', help='Administrator-provided CA bundle; default is certifi')
     parser.add_argument('--port', type=int, default=8765)
-    parser.add_argument('--mock', action='store_true', help='Use deterministic local fixture upstream')
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format='%(message)s')
     # SDK diagnostics can include invalid tool arguments; retain only gateway metadata.
@@ -88,9 +87,6 @@ def main():
     try:
         token = _secret(Path(args.caller_secret))
         transport = HTTPSGetTransport(cafile=args.ca_file or certifi.where())
-        if args.mock:
-            from .fixtures import FixtureTransport
-            transport = FixtureTransport()
         gateway = Gateway(args.config, transport=transport)
         # Include company secret in the same output-isolation policy.
         gateway._markers.add(token.encode())

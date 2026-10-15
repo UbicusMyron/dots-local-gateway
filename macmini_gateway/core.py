@@ -114,8 +114,8 @@ def _secret(path: Path) -> str:
 class Gateway:
     """Internal executor; caller_verified is supplied ONLY by a trusted adapter.
 
-    Never bind this parameter to caller-controlled request data. The current
-    component is used in-process by mock clients pending transport verification.
+    The authenticated server adapter supplies this value after checking the
+    company credential.
     """
 
     def __init__(self, config_path: str | Path, *, transport=None, logger=None):
@@ -274,7 +274,7 @@ class Gateway:
             suffix = urlencode(query)
             url = origin + request["path"] + ("?" + suffix if suffix else "")
             header, credential = accounts[request["account"]]
-            headers = {header: credential, "Accept-Encoding": "identity", "User-Agent": "macmini-gateway-e2e/1.0"}
+            headers = {header: credential, "Accept-Encoding": "identity", "User-Agent": "macmini-gateway/1.0"}
             if method == "GET":
                 response = self.transport.get(url, headers, self.timeout, self.max_bytes)
             else:

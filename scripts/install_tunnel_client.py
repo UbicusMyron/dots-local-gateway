@@ -14,14 +14,14 @@ OUT = ROOT / 'macmini_gateway/local/bin'
 
 
 def fetch(url):
-    with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'gateway-e2e-setup'}),
+    with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'gateway-setup'}),
                                 context=ssl.create_default_context(cafile=certifi.where()), timeout=120) as response:
         return response.read()
 
 
 def main():
     if (platform.system(), platform.machine()) != ('Darwin', 'arm64'):
-        raise SystemExit('This installer targets the test Mac (Darwin arm64).')
+        raise SystemExit('This installer targets macOS on Apple Silicon (Darwin arm64).')
     release = json.loads(fetch('https://api.github.com/repos/openai/tunnel-client/releases/latest'))
     name = f"tunnel-client-{release['tag_name']}-darwin-arm64.zip"
     asset = next(a for a in release['assets'] if a['name'] == name)

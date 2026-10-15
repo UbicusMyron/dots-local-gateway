@@ -1,5 +1,5 @@
 {
-  "services": {"demo": ["demo_account"]},
+  "services": {"provider": ["primary"]},
   "timeout": 30,
   "max_download_bytes": 10485760
 }

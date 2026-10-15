@@ -1,6 +1,4 @@
 # 接口目录
 
-Last Reviewed: 2026-10-15
-
-- [request.md](request.md)：公共请求边界草案，用于澄清和后续验证。
-- 当前接口处于设计阶段，正式契约随验证结果及范围确认定案。
+- [request.md](request.md)：公共请求边界。
+- [mcp-v1.md](mcp-v1.md)：当前 MCP 认证、请求、响应及限制。

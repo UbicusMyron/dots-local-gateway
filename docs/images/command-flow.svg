@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1080" viewBox="0 0 1600 1080"><rect width="1600" height="1080" fill="#F4F7FC"/>
+<text x="65" y="94" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="46" fill="#17263D">命令流｜谁发起，谁执行</text>
+<text x="65" y="137" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="25" fill="#53647B">按箭头顺序读取；箭头表示业务请求的传递方向。</text>
+<text x="65" y="219" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="31" fill="#315CDC">A  从聊天工具发起</text>
+<rect x="65" y="245" width="470" height="170" rx="18" fill="#FFFFFF" stroke="#D8E1EE" stroke-width="2"/>
+<text x="89" y="294" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="29" fill="#315CDC">① 用户 / dots</text>
+<text x="89" y="338" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">发送业务任务</text>
+<text x="89" y="375" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">选择 gateway_request</text>
+<rect x="565" y="245" width="470" height="170" rx="18" fill="#FFFFFF" stroke="#D8E1EE" stroke-width="2"/>
+<text x="589" y="294" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="29" fill="#315CDC">② OpenAI Tunnel</text>
+<text x="589" y="338" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">接收工具请求</text>
+<text x="589" y="375" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">Mac 客户端拉取请求</text>
+<rect x="1065" y="245" width="470" height="170" rx="18" fill="#FFFFFF" stroke="#D8E1EE" stroke-width="2"/>
+<text x="1089" y="294" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="29" fill="#315CDC">③ Mac 本地网关</text>
+<text x="1089" y="338" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">Tunnel → stdio 桥</text>
+<text x="1089" y="375" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">网关检查服务和接口</text>
+<path d="M535,330 L557,330" stroke="#315CDC" stroke-width="5"/><polygon points="557,330 541.6923992600045,337.3944140798909 541.6923992600045,322.6055859201091" fill="#315CDC"/>
+<path d="M1035,330 L1057,330" stroke="#315CDC" stroke-width="5"/><polygon points="1057,330 1041.6923992600045,337.3944140798909 1041.6923992600045,322.6055859201091" fill="#315CDC"/>
+<path d="M1300,415 L1300,455" stroke="#315CDC" stroke-width="5"/><polygon points="1300,455 1292.605585920109,439.6923992600045 1307.394414079891,439.6923992600045" fill="#315CDC"/>
+<rect x="1065" y="465" width="470" height="160" rx="18" fill="#FFFFFF" stroke="#D8E1EE" stroke-width="2"/>
+<text x="1089" y="514" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="29" fill="#315CDC">④ 第三方 API</text>
+<text x="1089" y="558" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">Mac 加入对应平台凭证</text>
+<text x="1089" y="595" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">向已配置接口发送请求</text>
+<rect x="65" y="465" width="970" height="160" rx="18" fill="#E7EDF9" stroke="#E7EDF9" stroke-width="2"/>
+<text x="90" y="518" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="28" fill="#315CDC">发送内容：服务名、账户名、方法、路径、参数</text>
+<text x="90" y="568" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="25" fill="#17263D">例如：provider / primary / GET / 指定接口</text>
+<text x="90" y="606" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="24" fill="#53647B">Mac 按配置执行一次 API 请求。</text>
+<text x="65" y="711" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="31" fill="#7354BA">B  从 dots 脚本发起（先完成第 7 节入口确认）</text>
+<rect x="65" y="740" width="470" height="175" rx="18" fill="#FFFFFF" stroke="#D8E1EE" stroke-width="2"/>
+<text x="89" y="789" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="29" fill="#7354BA">① dots 业务脚本</text>
+<text x="89" y="833" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">调用 dots_request</text>
+<text x="89" y="870" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">传入服务、账户和参数</text>
+<rect x="565" y="740" width="470" height="175" rx="18" fill="#FFFFFF" stroke="#D8E1EE" stroke-width="2"/>
+<text x="589" y="789" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="29" fill="#7354BA">② 已确认的脚本入口</text>
+<text x="589" y="833" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">直接 MCP URL：MCPTransport</text>
+<text x="589" y="870" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">平台程序桥：按实际接口适配</text>
+<rect x="1065" y="740" width="470" height="175" rx="18" fill="#FFFFFF" stroke="#D8E1EE" stroke-width="2"/>
+<text x="1089" y="789" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="29" fill="#7354BA">③ Mac → 第三方 API</text>
+<text x="1089" y="833" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">网关执行请求</text>
+<text x="1089" y="870" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="23" fill="#17263D">循环与分页由 dots 发起</text>
+<path d="M535,825 L557,825" stroke="#7354BA" stroke-width="5"/><polygon points="557,825 541.6923992600045,832.3944140798909 541.6923992600045,817.6055859201091" fill="#7354BA"/>
+<path d="M1035,825 L1057,825" stroke="#7354BA" stroke-width="5"/><polygon points="1057,825 1041.6923992600045,832.3944140798909 1041.6923992600045,817.6055859201091" fill="#7354BA"/>
+<text x="65" y="998" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="24" fill="#53647B">先确认入口，再运行脚本。Tunnel ID 填在工作区连接处；MCP URL 按管理员提供的值填写。</text>
+</svg>
