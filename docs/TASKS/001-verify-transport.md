@@ -19,10 +19,15 @@ Last Reviewed: 2026-10-15
 
 ### Touch
 
-- 一个模拟 MCP 服务模块及其测试（合计最多两个代码文件）。
+- macmini_gateway 中一个模拟 MCP 服务探针。
+- dots_request 中一个调用探针，包含三次循环及结果核对；两个组件合计最多两个代码文件。
 - docs/CONTRACTS/transport-probe.md：执行前补充实际探针命令和认证方式。
 - docs/TRANSPORT-EVIDENCE.md：测试证据。
 - 本任务状态。
+
+### Size Justification
+
+本任务为单条跨组件连接验证，触及两个顶层组件，以最小服务探针和调用探针组成一个联合验证单元。代码合计最多两个文件、约 300 行，连同契约、证据及任务状态合计最多五个文件。正式组件实现归入后续分组件任务。
 
 ### Execution Boundary
 
@@ -40,7 +45,7 @@ Last Reviewed: 2026-10-15
 - Consumes: 官方 Tunnel 文档、目标账号的实际能力和本地模拟服务。
 - Produces: 经验证的调用路径和各项条件的证据。
 - Public contracts touched: 模拟工具；命令及精确结构在选定运行时后补充探针契约。
-- Downstream tasks relying on this: 公共调用客户端、真实平台适配、下载接口。
+- Downstream tasks relying on this: macmini_gateway、dots_request 的正式实现与真实平台接入；阶段路线见 docs/DEVELOPMENT.md。
 
 ## Requirements
 
@@ -61,7 +66,7 @@ Last Reviewed: 2026-10-15
 ## Verification
 
 - Command: `bash /Users/myron/.codex/skills/constitution-skill/scripts/check-governance.sh .`
-- Expected evidence: 记录治理检查结果；用户要求的正向标题与原模板差异由人工核对。端到端能力以目标环境调用证据验收。
+- Expected evidence: 治理结构检查通过。端到端能力以目标环境调用证据验收。
 - 端到端命令：确定运行时与脚本调用方式后，在 docs/CONTRACTS/transport-probe.md 写入精确命令、环境、预期输出，随后进入 Ready。
 - Execution status: 待执行项目标明所需条件，已执行项目记录命令、结果和证据。
 

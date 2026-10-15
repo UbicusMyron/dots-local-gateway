@@ -4,6 +4,14 @@ Last Reviewed: 2026-10-15
 
 状态：设计草案。字段表达接口边界，传输、认证方式、文件表示及读写范围经验证与确认后冻结。
 
+## Component Responsibilities
+
+- Producer: dots_request 根据业务脚本或工具调用生成结构化请求。
+- Executor: macmini_gateway 完成公司调用认证、参数检查和平台认证，执行 API 请求与下载。
+- Consumer: dots_request 消费业务响应并保存接收的文件；业务插件负责后续计算。
+- Transport: 现成通道承载请求和响应；具体连接及文件表示依据技术验证冻结。
+- Configuration: dots_request 持有公司调用连接信息及服务/账户别名；macmini_gateway 持有第三方目标、认证适配及本地凭证引用。
+
 ## Request
 
 ```json

@@ -1,0 +1,5 @@
+__pycache__/
+*.py[cod]
+.venv/
+# Administrator-managed local configuration and credentials
+macmini_gateway/local/

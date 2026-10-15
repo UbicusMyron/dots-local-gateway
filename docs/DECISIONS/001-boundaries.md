@@ -13,6 +13,8 @@ Last Reviewed: 2026-10-15
 - dots 程序自主请求，并拥有业务循环。
 - 公司基本连接认证直接适用于首版调用方。
 - 首版交付公共调用入口、现成通道、小型代理服务和本地配置。
+- 同一仓库包含 macmini_gateway 和 dots_request，分别部署于堡垒机和 dots；docs/CONTRACTS/ 维护共享契约。
+- 两端分别通过模拟对端验证，再进行真实环境联合验收。
 
 ## Rationale
 

@@ -11,13 +11,57 @@ Last Reviewed: 2026-10-15
 
 ## Architecture Summary
 
-业务 script / Codex → dots 公共调用入口 → 现成连接通道 → 堡垒机 MCP/API 服务 → 第三方。
+业务 script / Codex → dots_request → 现成连接通道 → macmini_gateway → 第三方。
 Secure MCP Tunnel 为首选待验证通道；其客户端在堡垒机主动连接云端、转交请求和回传结果。
 代理服务确定性执行请求；Codex 用于主动配置、开发和排障。
 
+## Repository And Deployment
+
+两个组件在同一仓库分别开发、分别部署，共享文档和接口契约。以下为组件目录规划；dots_request 已建立调用核心和本地模拟验证，macmini_gateway 随其实现任务建立。
+
+```text
+AI_Operations_Gateway/
+├── macmini_gateway/     # 堡垒机服务、认证适配、配置示例、测试及部署配置
+├── dots_request/        # 薄客户端、公共 skill、配置示例及测试
+├── docs/
+│   ├── CONTRACTS/      # 两个组件共享的请求与响应约定
+│   └── TASKS/          # 当前可执行任务及阶段路线
+└── AGENTS.md
+```
+
+### macmini_gateway
+
+- 交付常驻 MCP/API 服务，处理公司调用认证、参数与目标校验、凭证选择、第三方认证、API 请求和下载。
+- 维护服务/账户到本地凭证与目标地址的配置，以及按实际平台需要增加的认证适配器。
+- 返回业务数据、文件内容或可获取的结果，并提供请求编号与经过检查的错误信息。
+- 保存模拟调用测试、配置示例及 launchd 部署配置。真实凭证由管理员在目标 Mac mini 本地录入。
+- 现成 tunnel-client 作为部署依赖；其启动和运行说明随本组件维护，具体进程组合依据通道验证确定。
+
+### dots_request
+
+- 交付面向业务脚本的公共调用入口和面向 Codex 的公共 skill，按通道验证结果确定最薄的客户端实现。
+- 负责组织请求参数、提交请求、接收业务数据、将下载结果保存到 dots 文件系统，以及呈现调用错误。
+- 管理公司调用连接信息与服务/账户别名说明。业务脚本拥有循环、编排、业务并发及重试决策。
+- AI 工具入口沿用所选通道提供的 MCP 接入能力，程序入口以脚本可直接调用为验收条件。
+
+### Shared Ownership
+
+`docs/CONTRACTS/` 是双方接口依据。网关校验和执行请求，客户端构造请求和消费结果；契约变更同步检查两端的模拟测试及真实链路验收。
+两端发布物各自携带所需代码和配置示例。文件配置通过显式路径加载，真实凭证存储由堡垒机本地管理。
+
+## Development Sequence
+
+1. 明确共享契约草案及模拟输入/输出，选择通道探针的运行时。
+2. 完成任务 001，用最小模拟服务和客户端探针验证真实 dots 的 AI 调用、脚本循环及文件传输。
+3. 依据证据确认传输、认证和文件形式，冻结最小接口；形成各组件的有界实现任务。
+4. macmini_gateway 使用模拟客户端和模拟第三方进行验证；dots_request 使用模拟网关进行验证。
+5. 两个组件在真实 dots 与 Mac mini 之间联合验收，再按确认范围接入首个真实平台。
+
+当前任务及后续阶段见 `docs/DEVELOPMENT.md`。
+
 ## Technology Stack
 
-- Runtime/language: 通道验证后选择最小可维护运行时。
+- Runtime/language: dots_request 调用核心采用 Python 3.10+ 标准库；线上通道适配和网关运行时依据通道验证选择。
 - Frameworks: 根据运行时及 MCP 接入验证结果确定。
 - Storage: 本地配置与受限凭证文件。
 - External services: OpenAI dots、候选 Secure MCP Tunnel、待选第三方平台。
@@ -28,10 +72,10 @@ Secure MCP Tunnel 为首选待验证通道；其客户端在堡垒机主动连�
 | Module | Responsibility | Owns | Collaboration |
 | --- | --- | --- | --- |
 | dots 业务 | 意图理解、循环、算法、结果处理 | 业务代码和结果文件 | 通过公共入口调用堡垒机 |
-| 公共调用入口 | 程序/工具提交请求和接收结果 | 服务别名目录、调用方连接信息 | 平台认证交由堡垒机，业务计算交由 dots |
+| dots_request | 程序/工具提交请求和接收结果 | 服务别名目录、调用方连接信息 | 平台认证交由堡垒机，业务计算交由 dots |
 | 连接通道 | 请求和响应传输 | 通道状态 | 向堡垒机递交结构化请求 |
-| 堡垒机代理 | 基本认证、参数检查、请求、下载 | 平台适配和认证逻辑 | 将业务结果交还 dots |
-| 本地凭证配置 | 账户到凭证的对应关系 | 本地凭证和固定目标地址 | 凭证读取权限归属本地服务 |
+| macmini_gateway | 基本认证、参数检查、请求、下载 | 平台适配和认证逻辑 | 将业务结果交还 dots |
+| macmini_gateway 本地配置 | 账户到凭证的对应关系 | 本地凭证和固定目标地址 | 凭证读取权限归属本地服务 |
 
 ## Data Model
 

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "timeout_seconds": 15,
+  "max_response_bytes": 1048576,
+  "services": {
+    "demo": {
+      "origin": "https://api.example.invalid",
+      "routes": {
+        "/items": {"response": "json", "query": ["page"]},
+        "/download": {"response": "file", "query": []}
+      },
+      "accounts": {
+        "demo_account": {"type": "bearer", "secret_file": "demo.secret"}
+      }
+    }
+  }
+}
