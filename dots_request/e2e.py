@@ -8,7 +8,7 @@ from .client import Client, RequestError
 from .mcp_transport import MCPTransport
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('--url', required=True)
     parser.add_argument('--caller-secret', required=True)
@@ -17,7 +17,7 @@ def main():
     parser.add_argument('--org', help='GitHub organization login')
     parser.add_argument('--model', help='A chat/completions model ID from the Go account')
     parser.add_argument('--download', default='gateway-e2e.txt')
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     try:
         client = Client(MCPTransport(args.url, args.caller_secret),
                         services={'demo': ['demo_account'], 'opencode_go': ['personal'], 'github': ['personal']}, timeout=110)

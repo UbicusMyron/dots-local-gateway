@@ -28,8 +28,8 @@ Last Reviewed: 2026-10-15
 
 | 验证项 | 状态 / 下一条件 |
 | --- | --- |
-| launchd 常驻、退出恢复、登录恢复 | 配置已准备；尚未 bootstrap，按运行手册实测 |
-| Secure MCP Tunnel | 用户尚未创建；需 tunnel_id、runtime key 与工作区权限 |
+| launchd 常驻、退出恢复、登录恢复 | 网关与 Tunnel 已 bootstrap，退出后 PID 自动更新并恢复；登录恢复待实测 |
+| Secure MCP Tunnel | 已创建并接入，runtime key 验证成功，healthz/readyz 返回 200；云端工具调用待验证 |
 | 桌面 Codex 经 Tunnel 调用 | 等 Tunnel 接入 |
 | 真实 dots 工具调用 | 等目标 dots 可选择连接 |
 | 真实 dots 脚本自主三次请求 | 需确认云脚本访问 Tunnel 的实际地址及认证/工具桥；本地 HTTP 成功仅支持本地结论 |
@@ -42,6 +42,12 @@ Last Reviewed: 2026-10-15
 
 - https://developers.openai.com/api/docs/guides/secure-mcp-tunnels
 - https://opencode.ai/v2/docs/console/go/
+
+## Tunnel 与常驻接入（2026-10-15）
+
+官方 tunnel-client v0.0.16 已通过受限运行凭证读取用户创建的 Tunnel 元数据并进入 polling；本机 healthz 与 readyz 均返回 200。网关和 Tunnel 使用用户 LaunchAgent 常驻，分别发送 SIGTERM 后均自动恢复为新 PID；恢复后本地三次请求和文件摘要核对通过。当前常驻网关运行 mock 配置，真实 API 与云端调用按独立用例继续验收。
+
+隔离目录中的 dots 安装包通过官方 dev proxy、stdio 桥与独立网关完成三次请求、下载、模拟推理和模拟 GitHub 分页；该证据属于本地模拟通道。运行记录保存于被忽略的 local/e2e 目录：full-simulation.json、resident-recovery.json、tunnel-health-evidence.json。
 
 ## GitHub 真实只读预检（2026-10-15）
 

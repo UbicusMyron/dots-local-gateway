@@ -1,11 +1,20 @@
 """Deterministic fixtures for transport acceptance; performs no outbound requests."""
 import json
 import time
+from urllib.parse import urlsplit, parse_qs
 from .core import UpstreamResponse
 
 
 class FixtureTransport:
     def get(self, url, headers, timeout, max_bytes):
+        parsed = urlsplit(url)
+        if parsed.path.startswith('/orgs/') and parsed.path.endswith('/repos'):
+            org = parsed.path.split('/')[2]
+            query = parse_qs(parsed.query)
+            page, size = int(query.get('page', ['1'])[0]), int(query.get('per_page', ['50'])[0])
+            rows = [{'id': i, 'full_name': f'{org}/fixture-{i}', 'private': i % 2 == 0,
+                     'html_url': f'https://github.com/{org}/fixture-{i}'} for i in range(1, 8)]
+            return UpstreamResponse(200, json.dumps(rows[(page-1)*size:page*size]).encode())
         if url.endswith('/slow'):
             time.sleep(.5)
         if url.endswith('/error'):

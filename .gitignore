@@ -9,3 +9,5 @@ macmini_gateway/local/
 dist/
 
 .DS_Store
+
+.dots-local/

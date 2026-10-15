@@ -12,7 +12,7 @@ gateway = [p for p in (root/'macmini_gateway').rglob('*')
            if p.is_file() and p.suffix in ('.py', '.md', '.json')
            and 'local' not in p.relative_to(root).parts and '__pycache__' not in p.parts]
 scripts = list((root/'scripts').glob('*.py'))
-for name, files in [('dots-request-e2e.zip', shared+client),
+for name, files in [('dots-request-e2e.zip', shared+client+[root/'scripts/install_dots.py']),
                     ('macmini-gateway-e2e.zip', shared+client+gateway+scripts)]:
     with ZipFile(out/name, 'w', ZIP_DEFLATED) as archive:
         for file in sorted(set(files)):
