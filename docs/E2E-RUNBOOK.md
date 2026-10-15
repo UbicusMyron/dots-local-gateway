@@ -4,7 +4,7 @@ Last Reviewed: 2026-10-15
 
 ## 当前准备范围
 
-本机模拟 Mac mini，常驻服务处理认证和第三方调用；dots 云电脑运行脚本；手机发起任务。当前用户确认 Tunnel 尚未创建，本轮准备代码、QA 和安装材料。真实 key 的导入与真实请求在进入实测时执行。
+本机模拟 Mac mini，常驻服务处理认证和第三方调用；dots 云电脑运行脚本；手机发起任务。当前测试机已接入真实 Tunnel，网关与 Tunnel 已常驻并通过退出恢复测试，网关当前运行 mock 配置。GitHub 本地真实预检已通过；OpenCode 真实调用和 dots 云端工具、程序通道待验收。最新角色分工及交接顺序见 [项目 README](../README.md)，执行证据见 [E2E-QA](E2E-QA.md)。以下初始化步骤用于新环境，已有环境先检查并复用现有材料。
 
 ## 本机安装
 
@@ -69,7 +69,7 @@ cd '/absolute/project/path' || exit 1
 exec '/absolute/project/path/.venv/bin/python' -m macmini_gateway.tunnel_stdio --caller-secret '/absolute/project/path/macmini_gateway/local/e2e/caller.secret'
 ```
 
-Tunnel runtime key 由管理员在本机按官方客户端配置方式录入。创建连接后先用桌面工具调用一次 gateway_request，再在 dots 中调用，核对本机相应 request_id。Tunnel 进程的常驻配置在取得实际 profile 和二进制路径后生成。
+Tunnel runtime key 由管理员在本机按官方客户端配置方式录入。创建连接后先用桌面工具调用一次 gateway_request，再在 dots 中调用，核对本机相应 request_id。当前测试机已安装 com.cuhk.macmini-tunnel.e2e LaunchAgent；新机器依据实际 profile、二进制和凭证路径生成配置。
 
 ## dots 安装与程序通道验证
 

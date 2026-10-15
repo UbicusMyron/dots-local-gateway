@@ -5,7 +5,8 @@ from zipfile import ZipFile, ZIP_DEFLATED
 root = Path(__file__).resolve().parents[1]
 out = root / 'dist'
 out.mkdir(exist_ok=True)
-shared = [root/'requirements-e2e.txt', root/'docs/E2E-RUNBOOK.md', root/'docs/CONTRACTS/e2e-v1.md']
+shared = [root/'README.md', root/'requirements-e2e.txt', root/'AGENTS.md']
+shared += list((root/'docs').rglob('*.md'))
 client = [p for p in (root/'dots_request').rglob('*')
           if p.is_file() and p.suffix in ('.py', '.md', '.json') and '__pycache__' not in p.parts]
 gateway = [p for p in (root/'macmini_gateway').rglob('*')
